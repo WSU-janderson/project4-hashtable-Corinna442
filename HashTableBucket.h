@@ -26,6 +26,11 @@ class HashTableBucket {
     // Parameter constructor, will assign with NORMAL
     HashTableBucket(const std::string& key, const size_t& value) : key(key), value(value), type(BucketType::NORMAL) {}
 
+    void load(const std::string& key, const size_t& value) {
+        key = key;
+        value = value;
+        type = BucketType::NORMAL;
+    }
     // Getters for key and value
     const std::string& getKey() const {
         return key;
@@ -35,12 +40,25 @@ class HashTableBucket {
         return value;
     }
 
+    // Mark as empty after removal (EAR)
+    void makeEAR() const {
+        type == BucketType::EAR;
+    }
+
+    void makeNormal() const {
+        type == BucketType::NORMAL;
+    }
+
+    void makeESS() const {
+        type == BucketType::ESS;
+    }
+
     // Getters for Bucket Types
-    bool isESS() const {
+    bool isEmptySinceStart() const {
         return type == BucketType::ESS;
     }
 
-    bool isEAR() const {
+    bool isEmptyAfterRemove() const {
         return type == BucketType::EAR;
     }
 
@@ -48,11 +66,24 @@ class HashTableBucket {
         return type == BucketType::NORMAL;
     }
 
-    // Check if bucket is empty (either ESS or EAR)
+    // Just check if bucket is empty (either ESS or EAR)
     bool isEmpty() const {
         return type == BucketType::ESS || type == BucketType::EAR;
     }
 
+    // Print out hash table
+    friend std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
+        if (type == BucketType::NORMAL) {
+            os << bucket.getKey() << " " << bucket.getValue();
+        }
+        else if (type == BucketType::ESS) {
+            os << "Empty from start";
+        }
+        else {
+            os << "Empty after removal";
+        }
+        return os;
+    }
 };
 
 

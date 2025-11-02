@@ -7,8 +7,11 @@
 
 #include <string>
 #include <cstddef> // For size_t
+#include <optional>
 #include <stdexcept> // exceptions
 #include <vector>
+
+#include "HashTableBucket.h"
 
 class HashTable {
     public:
@@ -18,10 +21,12 @@ class HashTable {
     bool remove(const std::string& key);
     bool contains(const std::string& key) const;
 
+    std::optional<size_t> HashTable::get(const std::string& key) const;
+
     private:
 
 
-    std::vector<size_t> table;
+    std::vector<HashTableBucket> table;
     size_t capacity;
     size_t count;
 
