@@ -24,9 +24,9 @@ class HashTableBucket {
     HashTableBucket() : key(""), value(0), type(BucketType::ESS) {}
 
     // Parameter constructor, will assign with NORMAL
-    HashTableBucket(const std::string& key, const size_t& value) : key(key), value(value), type(BucketType::NORMAL) {}
+    HashTableBucket(const std::string& k, const size_t& v) : key(k), value(v), type(BucketType::NORMAL) {}
 
-    void load(const std::string& key, const size_t& value) {
+    void load(const std::string& k, const size_t& v) {
         key = k;
         value = v;
         type = BucketType::NORMAL;
@@ -52,12 +52,13 @@ class HashTableBucket {
         value = 0;
     }
 
-    void makeNormal() const {
-        type == BucketType::NORMAL;
+    // Mutables
+    void makeNormal() {
+        type = BucketType::NORMAL;
     }
 
-    void makeESS() const {
-        type == BucketType::ESS;
+    void makeESS() {
+        type = BucketType::ESS;
     }
 
     // Getters for Bucket Types

@@ -6,9 +6,7 @@
 #define HASH_TABLE_H
 
 #include <string>
-#include <cstddef> // For size_t
 #include <optional>
-#include <stdexcept> // exceptions
 #include <vector>
 
 #include "HashTableBucket.h"
@@ -21,16 +19,19 @@ class HashTable {
     bool remove(const std::string& key);
     bool contains(const std::string& key) const;
 
-    std::optional<size_t> HashTable::get(const std::string& key) const;
-    std::size_t& HashTable::operator[](const std::string& key);
-    std::vector<std::string> HashTable::keys() const;
+    std::optional<size_t> get(const std::string& key) const;
+    std::size_t& operator[](const std::string& key);
+    std::vector<std::string> keys() const;
 
+    double alpha() const;
+    size_t capacity() const;
+    size_t size() const;
 
     private:
 
 
     std::vector<HashTableBucket> table;
-    size_t capacity;
+    size_t tableCapacity;
     size_t count;
 
 

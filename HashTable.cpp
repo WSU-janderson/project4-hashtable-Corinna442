@@ -16,8 +16,8 @@ using namespace std;
  * capacity is given, then it defaults to 8 initially.
  *
  */
-HashTable::HashTable(size_t initCapacity) : capacity(initCapacity), count(0) {
-        table.resize(capacity); // Creates vector of buckets
+HashTable::HashTable(size_t initCapacity) : tableCapacity(initCapacity), count(0) {
+        table.resize(tableCapacity); // Creates vector of buckets
     }
 
 /**
@@ -28,14 +28,14 @@ HashTable::HashTable(size_t initCapacity) : capacity(initCapacity), count(0) {
  */
 bool HashTable::insert(const std::string& key, const size_t& value) {
 
-    size_t index = std::hash<std::string>{}(key) % capacity;
+    size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
     // Linear probing loop
-    for (size_t i = 0; i < capacity; i++) {
+    for (size_t i = 0; i < tableCapacity; i++) {
 
         // Probe sequence
         // Goes through each index in the capacity
-        size_t probeIndex = (index + i) % capacity;
+        size_t probeIndex = (index + i) % tableCapacity;
 
         // Reference object of the bucket
         HashTableBucket& bucket = table[probeIndex];
@@ -64,10 +64,10 @@ bool HashTable::insert(const std::string& key, const size_t& value) {
  * the table. This might just be marking a bucket as empty-after-remove
  */
 bool HashTable::remove(const std::string& key) {
-    size_t index = std::hash<std::string>{}(key) % capacity;
+    size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
-    for (size_t i = 0; i < capacity; i++) {
-        size_t probeIndex = (index + i) % capacity;
+    for (size_t i = 0; i < tableCapacity; i++) {
+        size_t probeIndex = (index + i) % tableCapacity;
         HashTableBucket& bucket = table[probeIndex];
 
         if (bucket.isEmptySinceStart()) {
@@ -92,14 +92,14 @@ bool HashTable::remove(const std::string& key) {
  */
 bool HashTable::contains(const std::string& key) const {
 
-    size_t index = std::hash<std::string>{}(key) % capacity;
+    size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
     // Linear probing loop
-    for (size_t i = 0; i < capacity; i++) {
+    for (size_t i = 0; i < tableCapacity; i++) {
 
         // Probe sequence
         // Goes through each index in the capacity
-        size_t probeIndex = (index + i) % capacity;
+        size_t probeIndex = (index + i) % tableCapacity;
 
         // Reference object of the bucket
         const HashTableBucket& bucket = table[probeIndex];
@@ -135,14 +135,14 @@ bool HashTable::contains(const std::string& key) const {
  * @return
  */
 optional<size_t> HashTable::get(const std::string& key) const {
-    size_t index = std::hash<std::string>{}(key) % capacity;
+    size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
     // Linear probing loop
-    for (size_t i = 0; i < capacity; i++) {
+    for (size_t i = 0; i < tableCapacity; i++) {
 
         // Probe sequence
         // Goes through each index in the capacity
-        size_t probeIndex = (index + i) % capacity;
+        size_t probeIndex = (index + i) % tableCapacity;
 
         // Reference object of the bucket
         const HashTableBucket& bucket = table[probeIndex];
@@ -162,14 +162,14 @@ optional<size_t> HashTable::get(const std::string& key) const {
 }
 
 size_t& HashTable::operator[](const std::string& key) {
-    size_t index = std::hash<std::string>{}(key) % capacity;
+    size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
     // Linear probing loop
-    for (size_t i = 0; i < capacity; i++) {
+    for (size_t i = 0; i < tableCapacity; i++) {
 
         // Probe sequence
         // Goes through each index in the capacity
-        size_t probeIndex = (index + i) % capacity;
+        size_t probeIndex = (index + i) % tableCapacity;
 
         // Reference object of the bucket
         HashTableBucket& bucket = table[probeIndex];
@@ -203,4 +203,16 @@ vector<std::string> HashTable::keys() const {
             result.push_back(bucket.getKey()); // ESS and EAR skipped, keys copied into result
     }
     return result; // Return completed list
+}
+
+double HashTable::alpha() const {
+    return static_cast<double>(count) / static_cast<double>(tableCapacity);
+}
+
+size_t HashTable::capacity() const {
+    return tableCapacity;
+}
+
+size_t HashTable::size() const {
+    return count;
 }
