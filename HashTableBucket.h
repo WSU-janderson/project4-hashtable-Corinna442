@@ -27,8 +27,8 @@ class HashTableBucket {
     HashTableBucket(const std::string& key, const size_t& value) : key(key), value(value), type(BucketType::NORMAL) {}
 
     void load(const std::string& key, const size_t& value) {
-        key = key;
-        value = value;
+        key = k;
+        value = v;
         type = BucketType::NORMAL;
     }
     // Getters for key and value
@@ -40,9 +40,16 @@ class HashTableBucket {
         return value;
     }
 
+    // Added for operator method in HashTable
+    size_t& getValueRef() {
+        return value;
+    }
+
     // Mark as empty after removal (EAR)
-    void makeEAR() const {
-        type == BucketType::EAR;
+    void makeEAR() {
+        type = BucketType::EAR;
+        key = "";
+        value = 0;
     }
 
     void makeNormal() const {
@@ -73,10 +80,10 @@ class HashTableBucket {
 
     // Print out hash table
     friend std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
-        if (type == BucketType::NORMAL) {
+        if (bucket.type == BucketType::NORMAL) {
             os << bucket.getKey() << " " << bucket.getValue();
         }
-        else if (type == BucketType::ESS) {
+        else if (bucket.type == BucketType::ESS) {
             os << "Empty from start";
         }
         else {

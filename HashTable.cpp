@@ -160,3 +160,47 @@ optional<size_t> HashTable::get(const std::string& key) const {
 
     return std::nullopt; // if table is full and no available bucket
 }
+
+size_t& HashTable::operator[](const std::string& key) {
+    size_t index = std::hash<std::string>{}(key) % capacity;
+
+    // Linear probing loop
+    for (size_t i = 0; i < capacity; i++) {
+
+        // Probe sequence
+        // Goes through each index in the capacity
+        size_t probeIndex = (index + i) % capacity;
+
+        // Reference object of the bucket
+        HashTableBucket& bucket = table[probeIndex];
+
+        // If key is found, return the reference to its value**
+        if (bucket.isNormal() && bucket.getKey() == key) {
+            return bucket.getValueRef();
+        }
+
+        // If ESS, then key cannot exist (undefined)
+        if (bucket.isEmptySinceStart()) {
+            throw std::runtime_error("Attempt to access key that does not exist");
+        }
+    }
+
+}
+
+/**
+ * Returns a string containing all keys still stored, with the vector size being
+ * the same as the table's capacity.
+ *
+ * @return result
+ */
+vector<std::string> HashTable::keys() const {
+
+    std::vector<std::string> result; // Make a list of only key values
+
+    // for each loop-examines each bucket in capacity
+    for (const auto& bucket : table) {
+        if (bucket.isNormal())
+            result.push_back(bucket.getKey()); // ESS and EAR skipped, keys copied into result
+    }
+    return result; // Return completed list
+}

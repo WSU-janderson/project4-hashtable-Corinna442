@@ -22,6 +22,9 @@ class HashTable {
     bool contains(const std::string& key) const;
 
     std::optional<size_t> HashTable::get(const std::string& key) const;
+    std::size_t& HashTable::operator[](const std::string& key);
+    std::vector<std::string> HashTable::keys() const;
+
 
     private:
 
