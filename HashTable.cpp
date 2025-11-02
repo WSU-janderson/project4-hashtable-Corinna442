@@ -13,9 +13,9 @@ using namespace std;
  * capacity is given, then it defaults to 8 initially.
  *
  */
-HashTable::HashTable(size_t initCapacity) {
-
-}
+HashTable::HashTable(size_t initCapacity) : capacity(initCapacity), count(0) {
+        table.resize(capacity); // Creates vector of buckets
+    }
 
 /**
  * Insert a new key-value pair into the table. Duplicate keys are not allowed.
@@ -25,6 +25,8 @@ HashTable::HashTable(size_t initCapacity) {
  */
 bool HashTable::insert(const std::string& key, const size_t& value) {
 
+    // standard library hash
+    size_t index = std::hash<std::string>{}(key) % capacity;
 }
 
 /**

@@ -20,25 +20,10 @@ class HashTable {
 
     private:
 
-    struct Entry {
-        std::string key;
-        size_t value;
-        bool occupied = false;
-        bool deleted = false;
-    };
 
-    std::vector<Entry> table;
+    std::vector<size_t> table;
     size_t capacity;
     size_t count;
-
-    // first index where key should go
-    size_t hash(const std::string& key) const;
-
-    // step size for psuedo-random probing
-    size_t secondHash(const std::string& key) const;
-
-    // Run probing to locate index where the key should be stored
-    //size_t findInsertIndex(const std::string& key) const;
 
 
 

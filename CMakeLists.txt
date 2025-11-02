@@ -7,6 +7,7 @@ add_executable(HashTableDebug
         HashTableDebug.cpp
         HashTable.cpp
         HashTable.h
+        HashTableBucket.h
 )
 
 add_executable(HashTableTests
