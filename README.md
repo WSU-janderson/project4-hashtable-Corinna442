@@ -5,42 +5,53 @@ Project description can be found [in the repo](Project4_HashTable.pdf)
 
 Place your complexity analysis below.
 
-- insert(key, value)
 
-Average: O(1)
-Worst-case: O(n)
+# Time Complexity Analysis
 
-Justification
-- Hashing gives us an index of O(1). Linear probing requires checking some buckets before finding empty space. When the load is low, then the average is O(1). If the table is full with normal buckets or EAR, then O(n) is the worst case.
+## insert(key, value)
 
-- remove(key)
+**Average:** O(1)
+**Worst-case:** O(n)
 
-Average: O(1)
-Worst-case: O(n)
+**Justification**
+- Hashing gives us an index of O(1). Linear probing may check a few buckets before finding empty space. When the load is low, then the number of probes are constant. If the table is full or clustered, then the entire table may be scanned, giving O(n).
 
-Justification
-- It starts to hash at index O(1). Probing continues until it finds the key or an ESS slot. IF there are a few probes, then the average is normally O(1) and if the table is clustered, then the worst case is O(n).
 
-- contains(key)
 
-Average: O(1)
-Worst-case: O(n)
+## remove(key)
 
-Justification
-- This is basically the same as the remove case: go through sequence of probes and hash only once.
+**Average:** O(1)
+**Worst-case:** O(n)
 
-- get(key)
+**Justification**
+- Removal hashes starts at index O(1). Then, probing continues until it finds the key or an ESS slot. If low clustering, this takes more time; but in worst-case, more probing makes this O(n).
 
-Average: O(1)
-Worst-case: O(n)
 
-Justification
-- Same as contains, but this type returns a key value.
 
-- operator>>
+## contains(key)
 
-Average: O(1)
-Worst-case: O(n)
+**Average:** O(1)
+**Worst-case:** O(n)
 
-Justification
-- This gets and returns a reference value. This uses the same logic as get(), probe lookup.
+**Justification**
+- Contains will hash once and then performs a linear probe sequence. If low clustering, this takes more time; but in worst-case, more probing makes this O(n) (Similar to Remove).
+
+
+
+## get(key)
+
+**Average:** O(1)
+**Worst-case:** O(n)
+
+**Justification**
+- Same as contains, but this type returns a value other than a bool.
+
+
+
+## operator[](key)
+
+**Average:** O(1)
+**Worst-case:** O(n)
+
+**Justification**
+- operator[] uses a probe lookup just like get() and returns a reference to the value bucket.
