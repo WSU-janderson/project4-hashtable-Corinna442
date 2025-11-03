@@ -216,3 +216,11 @@ size_t HashTable::capacity() const {
 size_t HashTable::size() const {
     return count;
 }
+
+std::ostream& operator<<(std::ostream& os, const HashTable& hashTable) {
+    os << "---Hash Table---" << std::endl;
+    for (size_t i = 0; i < hashTable.size(); i++) {
+        os << i << ": " << hashTable.table[i] << std::endl;
+    }
+    return os;
+}

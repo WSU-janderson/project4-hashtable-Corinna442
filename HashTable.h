@@ -27,6 +27,8 @@ class HashTable {
     size_t capacity() const;
     size_t size() const;
 
+    friend std::ostream& operator<<(std::ostream& os, const HashTable& hashTable);
+
     private:
 
 
