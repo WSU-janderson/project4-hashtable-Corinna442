@@ -1,5 +1,8 @@
 /**
  * HashTable.cpp
+ * Corinna Green
+ * CS 3100 Data Structures
+ * 11/3/2025
  */
 
 #include "HashTable.h"
@@ -12,23 +15,26 @@ using namespace std;
 
 
 /**
- * A single constructor that takes an initial capacity for the table. If no
- * capacity is given, then it defaults to 8 initially.
- *
+ * This initializes the table with a given capacity (8). Each bucket starts as ESS.
  */
 HashTable::HashTable(size_t initCapacity) : tableCapacity(initCapacity), count(0) {
-        table.resize(tableCapacity); // Creates vector of buckets
+        table.resize(tableCapacity); // Creates vector of buckets, each defaults to ESS
     }
 
 /**
- * Insert a new key-value pair into the table. Duplicate keys are not allowed.
- * The method should return true if the insertion was successful. If the insertion was
- * unsuccessful, such as when a duplicate is attempted to be inserted, the method
- * should return false.
+ * This inserts a new key-value pair using linear probing. No duplicate keys allowed.
+ *
+ * returns true if insertion was successful
+ * returns false if duplicate key or table full
  */
-bool HashTable::insert(const std::string& key, const size_t& value) {
+bool HashTable::insert(const string& key, const size_t& value) {
 
-    size_t index = std::hash<std::string>{}(key) % tableCapacity;
+    // Check load factor and resize *if needed
+    if (alpha() > 0.5) {
+        resize();
+    }
+
+    size_t index = hash<std::string>{}(key) % tableCapacity;
 
     // Linear probing loop
     for (size_t i = 0; i < tableCapacity; i++) {
@@ -61,7 +67,9 @@ bool HashTable::insert(const std::string& key, const size_t& value) {
 
 /**
  * If the key is in the table, remove will "erase" the key-value pair from
- * the table. This might just be marking a bucket as empty-after-remove
+ * the table. Bucket becomes EAR.
+ *
+ * returns true if value removed, false if key does not exist.
  */
 bool HashTable::remove(const std::string& key) {
     size_t index = std::hash<std::string>{}(key) % tableCapacity;
@@ -88,7 +96,7 @@ bool HashTable::remove(const std::string& key) {
 }
 
 /**
- * returns true if the key is in the table and false if the key is not in the table
+ * returns true if the key is in the table and false if the key is not in the table.
  */
 bool HashTable::contains(const std::string& key) const {
 
@@ -119,20 +127,11 @@ bool HashTable::contains(const std::string& key) const {
 }
 
 /**
-*
-* If the key is found in the table, find will return the value associated with
-* that key. If the key is not in the table, find will return something called
-* nullopt, which is a special value in C++. The find method returns an
-* optional<int>, which is a way to denote a method might not have a valid value
-* to return. This approach is nicer than designating a special value, like -1, to
-* signify the return value is invalid. It's also much better than throwing an
-* exception if the key is not found.
-*
 * Why we use this method: optional<size_t> can represent either a real value or nullopt
 * (no value exists)
 *
- * @param key
- * @return
+ * @param key key value to find
+ * @return optional<size_t> if found, nullopt if key not found
  */
 optional<size_t> HashTable::get(const std::string& key) const {
     size_t index = std::hash<std::string>{}(key) % tableCapacity;
@@ -161,6 +160,13 @@ optional<size_t> HashTable::get(const std::string& key) const {
     return std::nullopt; // if table is full and no available bucket
 }
 
+/**
+ * Returns a reference value associated with the key. If no key, exception thrown.
+ *
+ *
+ * @param key value we are referencing
+ * @return key reference
+ */
 size_t& HashTable::operator[](const std::string& key) {
     size_t index = std::hash<std::string>{}(key) % tableCapacity;
 
@@ -191,7 +197,7 @@ size_t& HashTable::operator[](const std::string& key) {
  * Returns a string containing all keys still stored, with the vector size being
  * the same as the table's capacity.
  *
- * @return result
+ * @return result the vector containing all keys in the NORMAL buckets.
  */
 vector<std::string> HashTable::keys() const {
 
@@ -205,18 +211,69 @@ vector<std::string> HashTable::keys() const {
     return result; // Return completed list
 }
 
+/**
+ *
+ * @return load: size / capacity
+ */
 double HashTable::alpha() const {
     return static_cast<double>(count) / static_cast<double>(tableCapacity);
 }
 
+/**
+ *
+ * @return number of buckets
+ */
 size_t HashTable::capacity() const {
     return tableCapacity;
 }
 
+/**
+ *
+ * @return number of NORMAL buckets
+ */
 size_t HashTable::size() const {
     return count;
 }
 
+/**
+ * Double capacity, create new vector of HashTableBuckets, rehash old buckets into new one,
+ *  replace old table with new one.
+ */
+void HashTable::resize() {
+    size_t newCapacity = tableCapacity * 2; // Double capacity
+
+    std::vector<HashTableBucket> newTable(newCapacity);
+
+    // Initialize these buckets to ESS
+    for (auto& bcket : newTable) {
+        bcket = HashTableBucket();
+    }
+
+    // Reinsert the old values
+    for (const auto& bucket : table) {
+        if (bucket.isNormal()) {
+            size_t index = hash<std::string>{}(bucket.getKey()) % newCapacity;
+
+            // Linear probe in the new table
+            while (!newTable[index].isEmpty()) {
+                index = (index + 1) % newCapacity;
+            }
+
+            newTable[index] = HashTableBucket(bucket.getKey(), bucket.getValue());
+        }
+    }
+
+    // Swap with new table
+    table = std::move(newTable);
+    tableCapacity = newCapacity;
+}
+
+/**
+ * This prints out table and uses operator<< for debugging.
+ * @param os for printing out
+ * @param hashTable stores all buckets to print out
+ * @return os for printing
+ */
 std::ostream& operator<<(std::ostream& os, const HashTable& hashTable) {
     os << "---Hash Table---" << std::endl;
     for (size_t i = 0; i < hashTable.size(); i++) {
